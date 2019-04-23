@@ -1,8 +1,6 @@
 package stack;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 /**
  * description 顺序栈
@@ -17,6 +15,9 @@ public class ArrayStack {
     private int count;
     //数组长度
     private int lenth;
+
+    private static final ExecutorService EXECUTOR = new ThreadPoolExecutor(1, 3, 120, TimeUnit.SECONDS,
+            new LinkedBlockingDeque<>(1024));
 
     public ArrayStack(int lenth){
         this.items = new String[lenth];
@@ -40,5 +41,11 @@ public class ArrayStack {
         String item = items[count - 1];
         --count;
         return item;
+    }
+
+    public void executor(){
+        EXECUTOR.execute(()->{
+
+        });
     }
 }
