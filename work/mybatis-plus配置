@@ -1,0 +1,64 @@
+
+mybatis-plus.mapper-locations=classpath*:mapper/*Mapper.xml
+mybatis-plus.typeAliasesPackage=model包
+
+mybatis-plus.global-config.id-type=0
+mybatis-plus.global-config.field-strategy=2
+mybatis-plus.global-config.db-column-underline=true
+
+mybatis-plus.global-config.logic-delete-value=1
+mybatis-plus.global-config.logic-not-delete-value=0
+mybatis-plus.global-config.sql-injector=com.baomidou.mybatisplus.mapper.LogicSqlInjector
+
+mybatis-plus.configuration.map-underscore-to-camel-case=true
+mybatis-plus.configuration.cache-enabled=false
+
+
+import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
+import com.baomidou.mybatisplus.plugins.parser.ISqlParser;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+
+@Configuration
+@MapperScan({".dao*"})
+public class MybatisPlusConfig {
+
+    /**
+     * mybatis-plus分页插件<br>
+     * 文档：http://mp.baomidou.com<br>
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        // 开启 PageHelper 的支持
+        paginationInterceptor.setLocalPage(true);
+        List<ISqlParser> sqlParserList = new ArrayList<>();
+        paginationInterceptor.setSqlParserList(sqlParserList);
+        return paginationInterceptor;
+    }
+
+    /**
+     * SQL执行效率插件
+     *
+     * @return 效率对象
+     */
+    @Bean
+    @Profile({"dev", "local"})
+    public PerformanceInterceptor performanceInterceptor() {
+        PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
+        Properties properties = new Properties();
+        properties.setProperty("maxTime", "1000");
+        properties.setProperty("format", "true");
+        performanceInterceptor.setProperties(properties);
+        return performanceInterceptor;
+    }
+
+}
